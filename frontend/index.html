@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestão Lab TI - UTFPR-FB</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <!-- Bibliotecas PDF e Gráficos -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.31/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+    <section id="login-screen" class="login-container">
+        <div class="login-card">
+            <img src="logo.png" alt="UTFPR" class="logo-login" onerror="this.style.display='none'">
+            <h2>Acesso Lab TI</h2>
+            <form id="form-login">
+                <div class="form-group"><label>E-mail</label><input type="email" id="email" value="chefe@utfpr.edu.br"></div>
+                <div class="form-group"><label>Senha</label><input type="password" id="password" value="123"></div>
+                <button type="submit" class="btn-primary">Entrar</button>
+            </form>
+        </div>
+    </section>
+
+    <div id="sistema-principal" style="display: none;">
+        <div class="sidebar">
+            <div class="sidebar-logo-box"><span style="color:black; font-weight:bold;">UTFPR LABS</span></div>
+            <ul>
+                <li onclick="irParaInicio()" class="active"><i class="fas fa-chart-line"></i> <span>Dashboard</span></li>
+                <li onclick="showSection('chamados')"><i class="fas fa-wrench"></i> <span>Abrir Chamado</span></li>
+                <li onclick="showSection('software')" id="menu-btn-software"><i class="fas fa-compact-disc"></i> <span>Solicitar Software</span></li>
+                <li onclick="showSection('reservas')"><i class="fas fa-calendar-check"></i> <span>Reservar Equip.</span></li>
+                <li id="menu-vistoria" style="display: none;" onclick="showSection('vistoria')"><i class="fas fa-camera"></i> <span>Realizar Vistoria</span></li>
+                <li onclick="showSection('historico')"><i class="fas fa-history"></i> <span>Histórico</span></li>
+                <li onclick="logout()" style="margin-top: 20px; color: #e74c3c;"><i class="fas fa-sign-out-alt"></i> <span>Sair</span></li>
+            </ul>
+        </div>
+
+        <div class="main-content">
+            <header>
+                <h1>Painel de Controle</h1>
+                <div style="display:flex; gap:10px; align-items:center;">
+                    <button class="btn-sm" onclick="gerarRelatorioPDF()" style="background-color: #e74c3c; color: white; border: none;">
+                        <i class="fas fa-file-pdf"></i> Relatório Completo
+                    </button>
+                    <div class="user-info"><i class="fas fa-user-circle"></i> <span id="nome-usuario">...</span></div>
+                </div>
+            </header>
+
+            <section id="dashboard-area" class="container">
+                <!-- Dashboard via JS -->
+            </section>
+
+            <section id="historico" class="container" style="display:none;">
+                <h2>Histórico Completo</h2>
+                <div id="tabela-historico"></div>
+            </section>
+
+            <!-- ABA 1: ABRIR CHAMADO (ATUALIZADO COM TODAS AS SALAS) -->
+            <section id="chamados" class="container" style="display:none;">
+                <h2>Novo Chamado Técnico</h2>
+                <form id="form-chamado">
+                    <div class="form-group">
+                        <label>Local (Laboratório/Sala):</label>
+                        <select id="chamado-local" required>
+                            <option value="">Selecione...</option>
+                            <option value="Q-201">Q-201</option>
+                            <option value="Q-202">Q-202</option>
+                            <option value="Q-204">Q-204</option>
+                            <option value="Q-207">Q-207</option>
+                            <option value="Q-208">Q-208</option>
+                            <option value="Q-209">Q-209</option>
+                            <option value="Q-210">Q-210</option>
+                        </select>
+                    </div>
+                    <div class="form-group"><label>Descrição:</label><textarea id="chamado-desc" rows="4" required placeholder="Ex: Computador 05 não liga..."></textarea></div>
+                    <button type="submit" class="btn-primary">Abrir Chamado</button>
+                </form>
+            </section>
+
+            <!-- ABA 2: SOFTWARE (ATUALIZADO COM TODAS AS SALAS) -->
+            <section id="software" class="container" style="display:none;">
+                <h2>Solicitar Instalação</h2>
+                <form id="form-software">
+                    <div class="form-group"><label>Software:</label><input type="text" id="soft-nome" required placeholder="Ex: AutoCAD 2025"></div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                        <div class="form-group">
+                            <label>Lab:</label>
+                            <select id="soft-labs" required>
+                                <option value="">Selecione...</option>
+                                <option value="Q-201">Q-201</option>
+                                <option value="Q-202">Q-202</option>
+                                <option value="Q-204">Q-204</option>
+                                <option value="Q-207">Q-207</option>
+                                <option value="Q-208">Q-208</option>
+                                <option value="Q-209">Q-209</option>
+                                <option value="Q-210">Q-210</option>
+                            </select>
+                        </div>
+                        <div class="form-group" id="container-pc-especifico" style="display:none;"><label>PC (Opcional):</label><input type="text" id="soft-pc" placeholder="Ex: PC-01"></div>
+                    </div>
+                    <div class="form-group"><label>Prazo:</label><input type="date" id="soft-data" required></div>
+                    <button type="submit" class="btn-primary">Solicitar</button>
+                </form>
+            </section>
+
+            <section id="reservas" class="container" style="display:none;">
+                <h2>Reservar Equipamento</h2>
+                <form id="form-reserva">
+                    <div class="form-group"><label>Equipamento:</label><select id="reserva-equip" required></select></div>
+                    <div class="form-group"><label>Retirada:</label><input type="datetime-local" id="reserva-retirada" required></div>
+                    <div class="form-group"><label>Devolução:</label><input type="datetime-local" id="reserva-devolucao" required></div>
+                    <button type="submit" class="btn-primary">Reservar</button>
+                </form>
+            </section>
+
+            <section id="vistoria" class="container" style="display:none;">
+                <h2>Vistoria (Staff)</h2>
+                <form id="form-vistoria">
+                    <div class="form-group"><label>Tipo:</label><select id="vistoria-tipo"><option value="Retirada">Retirada</option><option value="Devolucao">Devolução</option></select></div>
+                    <div class="form-group"><label>Patrimônio:</label><div style="display:flex; gap:10px;"><input type="text" id="vistoria-patrimonio"><button type="button" class="btn-sm" onclick="buscarPorPatrimonio()">Buscar</button></div></div>
+                    <input type="hidden" id="vistoria-reserva-id-oculto">
+                    <div class="form-group"><label>Reserva:</label><input type="text" id="vistoria-info" readonly style="background:#e9ecef;"></div>
+                    <div class="form-group upload-area"><label style="color:#27ae60;">Evidência:</label><input type="file" id="vistoria-file" accept="image/*,video/*" required></div>
+                    <button type="submit" class="btn-primary" id="btn-salvar-vistoria" disabled>Concluir</button>
+                </form>
+            </section>
+        </div>
+    </div>
+
+    <!-- MODAL -->
+    <div id="modal-chamado" class="modal" style="display:none;">
+        <div class="modal-content">
+            <div class="modal-header"><h3>Chamado #<span id="modal-id"></span></h3><span class="close" onclick="fecharModal()">&times;</span></div>
+            <div class="modal-body">
+                <div class="detail-row"><div class="detail-label">Local</div><div class="detail-value" id="modal-local"></div></div>
+                <div class="detail-row"><div class="detail-label">Solicitante</div><div class="detail-value" id="modal-solicitante"></div></div>
+                <div class="detail-row"><div class="detail-label">Descrição</div><div class="detail-value" id="modal-desc" style="background:#f3f4f6; padding:10px; border-radius:6px;"></div></div>
+                <div class="detail-row" style="margin-top:10px;"><div class="detail-label">Status</div><div class="detail-value" id="modal-status"></div></div>
+            </div>
+            <div class="modal-footer" id="modal-actions"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,95 @@
+// Conexão com o Banco
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// --- MODELAGEM DO SISTEMA ---
+
+model Usuario {
+  id              Int       @id @default(autoincrement())
+  email           String    @unique
+  senha           String    
+  nome            String
+  perfil          String    // 'Aluno', 'Estagiario', 'Chefe', 'Professor'
+   
+  chamados        Chamado[]
+  reservas        Reserva[]
+  
+  // A LINHA QUE FALTAVA:
+  softwareRequests SoftwareRequest[] 
+   
+  createdAt       DateTime  @default(now())
+}
+
+model Chamado {
+  id          Int      @id @default(autoincrement())
+  local       String
+  descricao   String
+  midiaUrl    String?
+  status      String   @default("Pendente") 
+  prioridade  String   @default("Normal")
+   
+  usuarioId   Int
+  usuario     Usuario  @relation(fields: [usuarioId], references: [id])
+   
+  createdAt   DateTime @default(now())
+}
+
+model Equipamento {
+  id          Int       @id @default(autoincrement())
+  nome        String
+  tipo        String
+  patrimonio  String    @unique
+  status      String    @default("Disponivel")
+   
+  reservas    Reserva[]
+}
+
+model Reserva {
+  id            Int         @id @default(autoincrement())
+  dataRetirada  DateTime
+  dataDevolucao DateTime
+  
+  status        String      @default("Pendente") 
+  justificativa String?     
+   
+  usuarioId     Int
+  usuario       Usuario     @relation(fields: [usuarioId], references: [id])
+   
+  equipamentoId Int
+  equipamento   Equipamento @relation(fields: [equipamentoId], references: [id])
+   
+  vistorias     Vistoria[]
+  
+  createdAt     DateTime    @default(now())
+}
+
+model Vistoria {
+  id          Int      @id @default(autoincrement())
+  tipo        String   
+  midiaUrl    String   
+   
+  reservaId   Int
+  reserva     Reserva  @relation(fields: [reservaId], references: [id])
+   
+  createdAt   DateTime @default(now())
+}
+
+model SoftwareRequest {
+  id          Int      @id @default(autoincrement())
+  nome        String
+  labsDestino String
+  dataLimite  DateTime 
+  status      String   @default("Pendente")
+  
+  // Vínculo com quem pediu
+  usuarioId   Int?     
+  usuario     Usuario? @relation(fields: [usuarioId], references: [id])
+  
+  createdAt   DateTime @default(now())
+}
