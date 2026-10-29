@@ -1,169 +1,165 @@
-# Sistema Lab UTFPR
+# Sistema de Gestão para Laboratório da UTFPR
 
-Sistema de gestão para laboratório da UTFPR, desenvolvido em Node.js com Fastify, Prisma e PostgreSQL. O projeto inclui autenticação, controle de chamados, reservas de equipamentos, vistoria de itens e solicitações de software.
+## 1. Introdução
 
-## Visão geral
+O presente projeto consiste em um sistema de gestão para laboratórios acadêmicos da UTFPR, desenvolvido com foco em automatizar e centralizar atividades relacionadas ao controle de manutenção, reserva de equipamentos, registros de chamados e gestão de solicitações de software.
 
-Este projeto foi pensado para auxiliar na administração do laboratório com os seguintes módulos:
+A aplicação foi concebida para atender a um ambiente acadêmico em que diversos usuários, com perfis distintos, necessitam acessar e registrar informações de forma organizada, segura e eficiente. O sistema integra backend em Node.js, interface web em HTML/CSS/JavaScript e persistência em banco de dados PostgreSQL por meio do Prisma ORM.
 
-- Login de usuários
-- Cadastro e acompanhamento de chamados
-- Gestão de equipamentos
-- Reservas de itens do laboratório
-- Vistorias com upload de mídia
-- Solicitação de software para laboratórios
-- Interface web em HTML, CSS e JavaScript
+## 2. Objetivo
 
-## Stack tecnológica
+O objetivo principal do sistema é oferecer uma plataforma digital para:
 
-- Node.js
-- Fastify
-- Prisma ORM
-- PostgreSQL
-- Docker / Docker Compose
-- Frontend em HTML, CSS e JavaScript
+- autenticação de usuários;
+- registro e acompanhamento de chamados;
+- gestão de equipamentos e reservas;
+- controle de vistorias com mídia;
+- acompanhamento de solicitações de software para laboratórios.
 
-## Estrutura do repositório
+## 3. Contexto e funcionalidades
+
+O sistema foi estruturado para apoiar a rotina administrativa e operacional de um laboratório acadêmico, contemplando os seguintes módulos:
+
+### 3.1 Autenticação
+
+Os usuários podem realizar login por meio do endpoint de autenticação, com validação de e-mail e senha. A aplicação organiza o acesso por perfis, permitindo diferentes níveis de uso e responsabilidade operacional.
+
+### 3.2 Chamados
+
+O módulo de chamados permite registrar solicitações de manutenção, suporte técnico ou demandas do laboratório, incluindo informações sobre o local e a descrição da ocorrência. Cada chamado pode ser atualizado conforme seu status.
+
+### 3.3 Equipamentos
+
+A plataforma mantém um cadastro de equipamentos disponíveis no laboratório, permitindo consulta por categoria e patrimônio. Essa funcionalidade suporta controle físico e acompanhamento do patrimônio do ambiente.
+
+### 3.4 Reservas
+
+O sistema permite criar, listar e analisar reservas de equipamentos. A funcionalidade de aprovação e justificativa permite controlar o uso de itens por usuários e monitorar o estado de cada reserva.
+
+### 3.5 Vistorias
+
+A etapa de vistoria permite registrar inspeções relacionadas a uma reserva, incluindo upload de mídia, como imagem ou vídeo. Esse recurso é relevante para documentar a etapa de retirada, devolução ou inspeção do item.
+
+### 3.6 Solicitação de software
+
+O módulo de software permite registrar pedidos de software para laboratórios, informando destino, prazo e responsável pela solicitação. Também oferece acompanhamento do status da demanda.
+
+## 4. Arquitetura do sistema
+
+A aplicação é composta por:
+
+- backend em Node.js utilizando Fastify;
+- interface web em HTML, CSS e JavaScript;
+- ORM Prisma para acesso ao banco de dados;
+- banco PostgreSQL como mecanismo de persistência;
+- contenção de arquivos enviados em diretório local de uploads;
+- conteinerização com Docker e Docker Compose.
+
+## 5. Estrutura do repositório
 
 ```bash
 .
-├── frontend/              # Interface web do sistema
+├── frontend/
 │   ├── index.html
 │   ├── style.css
 │   ├── script.js
 │   └── logo.png
 ├── prisma/
-│   └── schema.prisma      # Modelos do banco de dados
-├── uploads/              # Arquivos enviados pelo sistema
+│   └── schema.prisma
+├── uploads/
 ├── .gitignore
 ├── Dockerfile
 ├── docker-compose.yml
 ├── package.json
 ├── package-lock.json
-├── server.js             # Backend principal
-└── README.md
+├── server.js
+├── README.md
+└── .vscode/
 ```
 
-## Funcionalidades principais
+## 6. Tecnologias utilizadas
 
-### 1. Autenticação
-
-Endpoint:
-
-- `POST /api/login`
-
-Permite login com e-mail e senha. Usuários padrão são criados automaticamente ao iniciar o sistema pela primeira vez.
-
-### 2. Chamados
-
-Endpoints:
-
-- `POST /api/chamados`
-- `GET /api/chamados`
-- `PUT /api/chamados/:id/status`
-
-Permite registrar e acompanhar problemas ou solicitações no laboratório.
-
-### 3. Equipamentos
-
-Endpoint:
-
-- `GET /api/equipamentos`
-
-Lista os equipamentos disponíveis no sistema.
-
-### 4. Reservas
-
-Endpoints:
-
-- `POST /api/reservas`
-- `GET /api/reservas`
-- `PUT /api/reservas/:id/analise`
-- `GET /api/reservas/patrimonio/:codigo`
-
-Gerencia reservas de equipamentos com aprovação e análise.
-
-### 5. Vistorias
-
-Endpoint:
-
-- `POST /api/vistorias`
-
-Permite registrar vistoria com upload de imagem ou vídeo associado a uma reserva.
-
-### 6. Solicitações de software
-
-Endpoints:
-
-- `POST /api/software`
-- `GET /api/software`
-- `PUT /api/software/:id/status`
-
-Gerencia solicitações de software para laboratórios.
-
-## Pré-requisitos
-
-Antes de rodar o projeto, certifique-se de ter instalado:
-
-- Node.js 18+
-- npm
+- Node.js
+- Fastify
+- Prisma ORM
+- PostgreSQL
 - Docker
 - Docker Compose
+- HTML
+- CSS
+- JavaScript
 
-## Configuração do ambiente
+## 7. Modelagem de dados
 
-### Opção 1: Usando Docker Compose (recomendado)
+A modelagem do banco de dados está definida no arquivo `prisma/schema.prisma` e inclui os principais modelos:
 
-O projeto já inclui um arquivo `docker-compose.yml` com:
+- `Usuario`
+- `Chamado`
+- `Equipamento`
+- `Reserva`
+- `Vistoria`
+- `SoftwareRequest`
 
-- serviço da aplicação
-- banco PostgreSQL
+Esses modelos estruturam o relacionamento entre usuários, equipamentos, solicitações e registros de uso e acompanhamento.
 
-Para iniciar:
+## 8. Requisitos para execução
+
+Os seguintes itens são necessários para rodar o projeto localmente:
+
+- Node.js 18 ou superior
+- npm
+- Docker e Docker Compose
+- PostgreSQL, caso a execução seja feita sem containerização
+
+## 9. Configuração e execução
+
+### 9.1 Execução com Docker Compose
+
+A forma mais prática de execução é por meio do arquivo `docker-compose.yml`, que já disponibiliza os serviços da aplicação e do banco de dados.
 
 ```bash
 docker-compose up --build
 ```
 
-A aplicação ficará disponível em:
+Após a inicialização, a aplicação fica disponível em:
 
 - http://localhost:3000
 
-### Opção 2: Executando localmente
+### 9.2 Execução local
 
-1. Instale as dependências:
+1. Instalar dependências:
 
 ```bash
 npm install
 ```
 
-2. Crie um arquivo `.env` na raiz do projeto com a URL do banco:
+2. Configurar a variável de ambiente `DATABASE_URL`:
 
 ```env
 DATABASE_URL="postgresql://user:password@localhost:5432/lab_utfpr"
 ```
 
-3. Gere o cliente Prisma:
+3. Gerar o cliente Prisma:
 
 ```bash
 npx prisma generate
 ```
 
-4. Sincronize o banco de dados:
+4. Sincronizar o schema com o banco:
 
 ```bash
 npx prisma db push
 ```
 
-5. Inicie o servidor:
+5. Iniciar a aplicação:
 
 ```bash
 node server.js
 ```
 
-## Usuários padrão
+## 10. Usuários padrão
 
-Ao iniciar o sistema pela primeira vez, usuários padrão são criados automaticamente:
+Ao iniciar o sistema pela primeira vez, o banco é populado automaticamente com usuários de exemplo:
 
 - Lenon Aluno
   - e-mail: `lenon@alunos.utfpr.edu.br`
@@ -178,60 +174,51 @@ Ao iniciar o sistema pela primeira vez, usuários padrão são criados automatic
   - e-mail: `prof@utfpr.edu.br`
   - senha: `123`
 
-## Banco de dados
+## 11. Endpoints principais
 
-O banco é modelado no arquivo:
+### Autenticação
 
-- `prisma/schema.prisma`
+- `POST /api/login`
 
-Modelos principais:
+### Chamados
 
-- `Usuario`
-- `Chamado`
-- `Equipamento`
-- `Reserva`
-- `Vistoria`
-- `SoftwareRequest`
+- `POST /api/chamados`
+- `GET /api/chamados`
+- `PUT /api/chamados/:id/status`
 
-## Uploads
+### Equipamentos
 
-Os arquivos enviados para vistorias são salvos na pasta:
+- `GET /api/equipamentos`
 
-- `./uploads`
+### Reservas
 
-Esses arquivos são servidos estaticamente pela aplicação em `/uploads/...`.
+- `POST /api/reservas`
+- `GET /api/reservas`
+- `PUT /api/reservas/:id/analise`
+- `GET /api/reservas/patrimonio/:codigo`
 
-## Observações
+### Vistorias
 
-- O backend principal está em `server.js`.
-- A interface web está em `frontend/`.
-- A aplicação usa `Fastify` e `Prisma` para lidar com API e banco de dados.
-- O projeto foi desenvolvido para uso acadêmico/laboratorial e pode ser adaptado conforme a necessidade do ambiente.
+- `POST /api/vistorias`
 
-## Comandos úteis
+### Solicitação de software
 
-```bash
-# instalar dependências
-npm install
+- `POST /api/software`
+- `GET /api/software`
+- `PUT /api/software/:id/status`
 
-# iniciar backend
-node server.js
+## 12. Arquivos enviados
 
-# subir banco e app com Docker
-docker-compose up --build
+Arquivos recebidos pelo sistema, como imagens e vídeos, são armazenados na pasta `uploads` e servidos pela aplicação em rotas estáticas sob o prefixo `/uploads/`.
 
-# gerar cliente Prisma
-npx prisma generate
+## 13. Considerações finais
 
-# sincronizar schema com o banco
-npx prisma db push
-```
+O Sistema Lab UTFPR representa uma solução prática para o gerenciamento de atividades acadêmicas em laboratório, integrando processos administrativos, operacionais e de logística em uma única plataforma. A estrutura modular e a utilização de tecnologias atuais favorecem a manutenção, extensão e adaptação do sistema a novas demandas do ambiente universitário.
 
-## Licença
+## 14. Licença
 
-Este projeto não possui uma licença definida no repositório.
+Este repositório não possui licença definida no momento.
 
-## Autor
+## 15. Autor
 
 - Lenon Fernandes
-
