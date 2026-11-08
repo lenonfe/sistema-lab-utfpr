@@ -221,4 +221,4 @@ Este repositório não possui licença definida no momento.
 
 ## 15. Autor
 
-- Lenon Felipe 
+- Lenon Felipe Schmitz da Silva
