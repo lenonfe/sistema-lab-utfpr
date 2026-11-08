@@ -221,4 +221,4 @@ Este repositório não possui licença definida no momento.
 
 ## 15. Autor
 
-- Lenon Fernandes
+- Lenon Felipe 
